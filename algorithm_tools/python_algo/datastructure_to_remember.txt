@@ -1,0 +1,193 @@
+---------- ch.2: the basics
+
+- lists are stored as arrays in memory
+- O(g): mapping to functions that do not grow faster than g
+- growths:
+    O(g): big O - upper bound
+    theta(g): asymptotic growth
+    omega(g): lower bound
+
+order of complexity:
+1) constant: hash
+2) logrithmic: binary search
+3) linear: iterate
+4) loglingear: search
+5) quadratic 
+6) cubic
+7) polynomial: nested 4 loops
+8) exponential: every subset
+9) factorial: every permutation
+
+
+Hidden for loops: list comprehension, mappings, sum
+
+Affect runtime:
+1) Type of input could affect the runtime (sorted vs unsorted)
+2) the nested loops could execute different amounts of time
+
+    ---- Implementing graphs as trees
+
+Trees: connected/no cycles
+Forest: no cycles
+
+Ways to represent: Need method of neighborhood function (mapping node to neighbors)
+1) adjacency set: list of sets (so no particular order)
+- good if want to check membership
+2) adjacency list: list of lists
+- not as much overhead (aka if all want to )
+2b) sorted adjacency list: member look up is logn
+3) list of dictionaries: store edge weights
+4) nested dictionaries
+5) adjacency matrix (list of list)
+- O(n) for degree
+
+How to represent tree:
+1) nested lists
+2) object with left/right
+3) dictionary
+
+float('inf) --> how make no edge
+0 for diagonal
+
+Hidden quadratic time: 
+1) lots of member check over list (could fix with reference counting or set)
+2) looping and everytime creating a new obj (which copies all elements)
+3) looping and doing +=
+
+Rules: 
+1) never compare floating point numbers
+2) always avoid subtraction of floating point
+
+
+---------- ch.3: counting 101
+
+math module has access to a lot of functions
+    Ex: math.log2
+
+Types of counting:
+1) round robin: sum of i --> O(n**2)
+    - Ex: number of edges in complete graphs
+    - number of matches would have to fight is n-1,n-2....
+2) tournament: forms a tree from the nodes
+    - sum of 2**i (0,h-1) --> n - 1 where n = 2**h
+    - number of internal nodes is n-1
+        because every battle one night would get knocked out until got winner
+    - heigh of tree = log(n)
+
+Can think of tournament as way of splitting work
+n/2**l --> the amount of work done at each layer
+
+can think of binary ree in terms of binary sequence:
+- leafs: number of binary sequences of length h (heigh of tree)
+- leafs: all possible subsets of h objects
+    * just the sum of the combination (N ki) for ki 1 to k
+
+When looking at an input as just a number, but we need to define the input size as the number of bits used to encode it:
+
+    Ex: find if number n is polynomial
+        - number of bits to represent k = floor(log(n,2))+1
+        - a naive approach would be to linear search from (2,n)
+
+        so n operations = 2**k, so exponential
+    
+    # ---- recursion 
+
+recursive algorithms: functions that have option to 
+1) call itself again with different arguments
+2) return a value
+
+recurrence equation = equation that references itself
+Can write tiem complexity as recurrence equaation,
+
+Method 1 fo solving for explicit form: repeated substitution 
+
+    a. keep doing repeated substitution until you see pattern
+    b. write as a function of the number of calls (i)
+    c. substitute in the number of calls needed to reach the base case (and then T() --> T(1))
+    d. Result: the total amount of time
+
+
+General form of recursive algorithm's recurrence eq
+T(n) = a* T(g(n)) + f(n)  
+    - a: number of recursive calls
+    - g(n): size of the subproblem
+    - f(n): work needed to reduce down to subproblems
+
+Recurrent               Solution          Example
+----------------------------------------------------
+T(n) = T(n-1) + 1       O(n)            Iterate seq
+T(n) = T(n-1) + n       O(n**2)         handshake prob
+T(n) = 2T(n-1) + 1      O(2**n)        towers of hanoi
+T(n) = T(n/2) + 1       O(lg(n))      Binary search
+T(n) = T(n/2) + n       O(n)           randomized select
+T(n) = 2T(n/2) + 1      O(n)          Tree traversal
+T(n) = 2T(n/2) + n      O(nlog(n))    Sort by divide and conq
+
+Method 2 fo solving for explicit form: inductive guess
+1) guess the Solution
+2) substitute into inductive solution T(n-1) = guess(n-1)
+3) see if holds for T(n)
+
+
+Can anticipate the solution using the general formula
+T(n) = a*T(n/b) + f(n)
+    - consider a*f(n/b) <? f(n)
+    - rewrite from leaf node perspective:
+        n**(logb(a))*1 <? f(n)
+
+    Options:
+        1) if left side greater: leaves dominate --> n**(logb(a))
+        2) if right greater: extra work dominates --> f(n)
+        3) if equal --> multiply f(n)*height 
+            - because all levels equal
+
+    
+----- Ch. 4: Induction, Recursion and Reduction
+
+Important definitions:
+1) abstraction: isolate certain portion to focus on that
+2) recursion: calls iteslef, combines recursive calls to form correct solution
+3) induction: starting from base case, shows true for larger case
+4) reduction: turning problem we have into one we already know
+
+negatives to recursion (could always write as iterative loop) 
+1) overhead with function calls
+2) maximum depth of recursion
+
+
+# --- Ch.5: traversal
+
+- Can do topological sorting using DFS and adding once it pops back then can add it
+
+
+# --- Ch.7 ---
+huffman coding about creating optimal tree for frequency weighting
+
+How can prove optimal: 
+1) greedy property: greedy choice was part of the optimal solution
+2) optimal substructure: solve remaining problem like previous
+
+minimum spanning tree: picking the edges that span the tree witih minimum weight
+- Solution: Always choose cheapest edge
+
+prims algorithms always adds the cheapest edge to the tree by pushing onto a heap
+
+Tricks for when greedy algorithm works: 
+1) when each step the algorithm got just as far as the optimal soluiton
+2) show optimal algorithm can be changed into our greedy solution
+3) staying safe: not preclude the optimal algorithm
+
+
+# --- ch. 8: tangled dependencies and memoization
+
+problems: 
+1) longest increasing subsequence
+2) shortest path in DAG
+3) longest_common_sequence
+4) knapsack
+
+A lot of times can decompose problem into a binary choice of choosing to include element or not and adding combinations
+
+Can express a problem as the combination of recursive calls, but then memoize the recursive calls that could overlap
+
+-- usually about finding the sum, max or min over different choices (and then use recursion to make work)
